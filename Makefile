@@ -1,4 +1,4 @@
-OBJS = main.o dice.o
+OBJS = main.o dice.o skills.o
 APP = dnd
 
 DBG = -g
