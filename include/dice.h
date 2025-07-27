@@ -11,11 +11,11 @@ extern int dice_errno;
 typedef size_t roll_result_t;
 
 enum roll_aggregation_policy {
-    SUM,
-    KEEP_HIGH,
-    KEEP_LOW,
-    COUNT_ABOVE,
-    COUNT_BELOW
+    POLICY_SUM,
+    POLICY_KEEP_HIGH,
+    POLICY_KEEP_LOW,
+    POLICY_COUNT_ABOVE,
+    POLICY_COUNT_BELOW
 };
 
 void dice_seed(void);

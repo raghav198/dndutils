@@ -54,16 +54,10 @@ roll_result_t dice_perform_roll(size_t count, size_t sides,
         results[i] = rand() % sides + 1;
     }
 
-    // Debug
-    fprintf(stderr, "Raw roll: ");
-    for (size_t i = 0; i < count; i++)
-        fprintf(stderr, "%zu ", results[i]);
-    fprintf(stderr, "\n");
-
     // Aggregate
     switch (policy) {
-    case KEEP_HIGH:
-    case KEEP_LOW: {
+    case POLICY_KEEP_HIGH:
+    case POLICY_KEEP_LOW: {
         // Can't keep top three of only two rolls
         if (policy_value > count) {
             dice_errno = EROLL_INVAL;
@@ -74,23 +68,23 @@ roll_result_t dice_perform_roll(size_t count, size_t sides,
         // Add up top/bottom N
         roll_result_t result = 0;
         for (size_t i = 0; i < policy_value; i++) {
-            result += results[policy == KEEP_LOW ? i : (count - i - 1)];
+            result += results[policy == POLICY_KEEP_LOW ? i : (count - i - 1)];
         }
         return result;
     }
-    case COUNT_ABOVE:
-    case COUNT_BELOW: {
+    case POLICY_COUNT_ABOVE:
+    case POLICY_COUNT_BELOW: {
         // Filter and count
         roll_result_t result = 0;
         for (size_t i = 0; i < count; i++) {
-            if ((policy == COUNT_ABOVE && results[i] > policy_value) ||
-                (policy == COUNT_BELOW && results[i] < policy_value)) {
+            if ((policy == POLICY_COUNT_ABOVE && results[i] > policy_value) ||
+                (policy == POLICY_COUNT_BELOW && results[i] < policy_value)) {
                 result++;
             }
         }
         return result;
     }
-    case SUM: {
+    case POLICY_SUM: {
         // Just add them up
         roll_result_t result = 0;
         for (size_t i = 0; i < count; i++) {
@@ -147,26 +141,26 @@ roll_result_t _evaluate_single_roll(const char *str, size_t *index) {
     if (!strncasecmp(str + *index, "kh", 2)) {
         *index += 2;
         size_t policy_value = _parse_int(str, index);
-        return dice_perform_roll(count, sides, KEEP_HIGH, policy_value);
+        return dice_perform_roll(count, sides, POLICY_KEEP_HIGH, policy_value);
     }
     if (!strncasecmp(str + *index, "kl", 2)) {
         *index += 2;
         size_t policy_value = _parse_int(str, index);
-        return dice_perform_roll(count, sides, KEEP_LOW, policy_value);
+        return dice_perform_roll(count, sides, POLICY_KEEP_LOW, policy_value);
     }
     if (!strncasecmp(str + *index, "<", 1)) {
         (*index)++;
         size_t policy_value = _parse_int(str, index);
-        return dice_perform_roll(count, sides, COUNT_BELOW, policy_value);
+        return dice_perform_roll(count, sides, POLICY_COUNT_BELOW, policy_value);
     }
     if (!strncasecmp(str + *index, ">", 1)) {
         (*index)++;
         size_t policy_value = _parse_int(str, index);
-        return dice_perform_roll(count, sides, COUNT_ABOVE, policy_value);
+        return dice_perform_roll(count, sides, POLICY_COUNT_ABOVE, policy_value);
     }
 
     // If there is none, fall back to SUM
-    return dice_perform_roll(count, sides, SUM, 0);
+    return dice_perform_roll(count, sides, POLICY_SUM, 0);
 }
 
 roll_result_t dice_evaluate_roll(const char *str, const char **endptr) {
