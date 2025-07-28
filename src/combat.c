@@ -1,5 +1,6 @@
 #include "combat.h"
 #include "character.h"
+#include "skills.h"
 
 struct attack_result npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
                      enum stat attacking_stat) {
@@ -22,11 +23,11 @@ void npc_apply_damage(struct npc_sheet *npc, size_t damage,
     if (npc->damage_modifications[type] == DAMAGE_VULNERABILITIY)
         damage *= 2;
     
-    if (npc->HP <= damage) {
-        npc->HP = 0;
+    if (npc->max_HP <= damage) {
+        npc->max_HP = 0;
         return;
     }
-    npc->HP -= damage;
+    npc->max_HP -= damage;
 }
 
 // EXAMPLES OF COMBAT ABILITIES
@@ -60,7 +61,8 @@ void combat_fireball(const struct npc_sheet *attacker, struct npc_sheet *defende
     size_t dc = npc_calculate_dc(*attacker, INT);
     for (size_t i = 0; i < num_defenders; i++) {
         // Ask each defender to make a dex save
-        roll_result_t save = npc_make_save(defenders[i], DEX);
+        // TODO: check for magic resistance or other conditions
+        roll_result_t save = npc_make_save(defenders[i], DEX, SAVE_STRAIGHT); 
         roll_result_t damage = dice_perform_roll(8, 6, POLICY_SUM, 0);
         // Halve the damage on a successful save
         if (save >= dc)

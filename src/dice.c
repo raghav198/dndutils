@@ -12,6 +12,27 @@
 
 int dice_errno = 0;
 
+size_t dice_get_sides(enum dice_size size) {
+    switch (size) {
+    case D4:
+        return 4;
+    case D6:
+        return 6;
+    case D8:
+        return 8;
+    case D10:
+        return 10;
+    case D12:
+        return 12;
+    case D20:
+        return 20;
+    case D100:
+        return 100;
+    default:
+        return 0;
+    }
+}
+
 void dice_seed(void) {
     // Don't seed if we've already seeded
     static bool seeded = false;

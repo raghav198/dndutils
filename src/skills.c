@@ -1,3 +1,4 @@
+#include "skills.h"
 #include "character.h"
 #include "dice.h"
 
@@ -71,8 +72,17 @@ roll_result_t npc_make_check(struct npc_sheet npc, enum skill skill, enum stat s
     return roll + mod;
 }
 
-roll_result_t npc_make_save(struct npc_sheet npc, enum stat stat) {
-    roll_result_t roll = dice_perform_roll(1, 20, POLICY_SUM, 0);
+roll_result_t npc_make_save(struct npc_sheet npc, enum stat stat,
+                            enum save_type type) {
+    roll_result_t roll;
+    if (type == SAVE_ADV) {
+        roll = dice_perform_roll(1, 20, POLICY_KEEP_HIGH, 1);
+    } else if (type == SAVE_DIS) {
+        roll = dice_perform_roll(1, 20, POLICY_KEEP_LOW, 1);
+    } else {
+        roll = dice_perform_roll(1, 20, POLICY_SUM, 0);
+    }
+
     mod_t mod = _stat_mod(npc.stats[stat]);
     if ((npc.saves >> stat) & 1) {
         mod += _prof_bonus(npc.CR);
@@ -82,4 +92,15 @@ roll_result_t npc_make_save(struct npc_sheet npc, enum stat stat) {
 
 size_t npc_calculate_dc(struct npc_sheet npc, enum stat stat) {
     return _stat_mod(npc.stats[stat]) + _prof_bonus(npc.CR) + 8;
+}
+
+enum save_type save_type_apply(enum save_type a, enum save_type b) {
+    if (a == SAVE_STRAIGHT)
+        return b;
+    if (b == SAVE_STRAIGHT)
+        return a;
+    if (a == SAVE_ADV && b == SAVE_DIS) {
+        return SAVE_STRAIGHT;
+    }
+    return a;
 }

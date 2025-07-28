@@ -10,6 +10,9 @@ extern int dice_errno;
 
 typedef size_t roll_result_t;
 
+enum dice_size { D4, D6, D8, D10, D12, D20, D100, NUM_SIZES };
+size_t dice_get_sides(enum dice_size size);
+
 enum roll_aggregation_policy {
     POLICY_SUM,
     POLICY_KEEP_HIGH,
