@@ -2,15 +2,15 @@
 #include "dice.h"
 #include "skills.h"
 
-attack_result_t npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
+struct attack_result npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
                      enum stat attacking_stat) {
     mod_t mod = npc_get_mod(attacker, NUM_SKILLS, attacking_stat);
     roll_result_t attack_roll = dice_perform_roll(1, 20, POLICY_SUM, 0);
     if (attack_roll == 20) 
-        return (attack_result_t){.hit = true, .crit = true};
+        return (struct attack_result){.hit = true, .crit = true};
     if (attack_roll == 1)
-        return (attack_result_t){.hit = false, .crit = true};
-    return (attack_result_t){.hit = (attack_roll + mod) >= defender.AC, .crit = false};
+        return (struct attack_result){.hit = false, .crit = true};
+    return (struct attack_result){.hit = (attack_roll + mod) >= defender.AC, .crit = false};
 }
 
 void npc_apply_damage(struct npc_sheet *npc, size_t damage) {
@@ -36,7 +36,7 @@ void combat_eldritch_blast(const struct npc_sheet *attacker, struct npc_sheet *d
     // Make a number of attack rolls against the defender's AC
     // (assume they all target the same creature)
     for (size_t i = 0; i < num_bolts; i++) {
-        attack_result_t result = npc_make_attack(*attacker, *defender, CHA);
+        struct attack_result result = npc_make_attack(*attacker, *defender, CHA);
         if (result.hit) {
             roll_result_t damage =
                 dice_perform_roll((result.crit ? 2 : 1), 10, POLICY_SUM, 0);
@@ -63,7 +63,7 @@ void combat_fireball(const struct npc_sheet *attacker, struct npc_sheet *defende
 void combat_longsword_strike(const struct npc_sheet *attacker,
                              struct npc_sheet *defender) {
     // Much easier: just make an attack roll
-    attack_result_t result = npc_make_attack(*attacker, *defender, STR);
+    struct attack_result result = npc_make_attack(*attacker, *defender, STR);
     if (result.hit) {
         roll_result_t damage =
             dice_perform_roll((result.crit ? 2 : 1), 8, POLICY_SUM, 0);

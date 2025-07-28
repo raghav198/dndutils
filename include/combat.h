@@ -5,14 +5,14 @@
 
 #include <stdbool.h>
 
-typedef struct attack_result {
+struct attack_result {
     bool hit;
     bool crit;
-} attack_result_t;
+};
 
-attack_result_t npc_make_attack(struct npc_sheet attacker,
-                                struct npc_sheet defender,
-                                enum stat attacking_stat);
+struct attack_result npc_make_attack(struct npc_sheet attacker,
+                                     struct npc_sheet defender,
+                                     enum stat attacking_stat);
 
 void npc_apply_damage(struct npc_sheet *npc, size_t damage);
 
