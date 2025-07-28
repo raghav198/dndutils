@@ -1,3 +1,4 @@
+#include "combat.h"
 #include "character.h"
 
 struct attack_result npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
@@ -11,7 +12,16 @@ struct attack_result npc_make_attack(struct npc_sheet attacker, struct npc_sheet
     return (struct attack_result){.hit = (attack_roll + mod) >= defender.AC, .crit = false};
 }
 
-void npc_apply_damage(struct npc_sheet *npc, size_t damage) {
+void npc_apply_damage(struct npc_sheet *npc, size_t damage,
+                      enum damage_type type) {
+
+    if (npc->damage_modifications[type] == DAMAGE_IMMUNITY)
+        return;
+    if (npc->damage_modifications[type] == DAMAGE_RESISTANCE)
+        damage /= 2;
+    if (npc->damage_modifications[type] == DAMAGE_VULNERABILITIY)
+        damage *= 2;
+    
     if (npc->HP <= damage) {
         npc->HP = 0;
         return;
@@ -38,7 +48,7 @@ void combat_eldritch_blast(const struct npc_sheet *attacker, struct npc_sheet *d
         if (result.hit) {
             roll_result_t damage =
                 dice_perform_roll((result.crit ? 2 : 1), 10, POLICY_SUM, 0);
-            npc_apply_damage(defender, damage);
+            npc_apply_damage(defender, damage, TYPE_FORCE);
         }
     }
 }
@@ -55,7 +65,7 @@ void combat_fireball(const struct npc_sheet *attacker, struct npc_sheet *defende
         // Halve the damage on a successful save
         if (save >= dc)
             damage /= 2;
-        npc_apply_damage(&defenders[i], damage);
+        npc_apply_damage(&defenders[i], damage, TYPE_FIRE);
     }
 }
 void combat_longsword_strike(const struct npc_sheet *attacker,
@@ -65,6 +75,6 @@ void combat_longsword_strike(const struct npc_sheet *attacker,
     if (result.hit) {
         roll_result_t damage =
             dice_perform_roll((result.crit ? 2 : 1), 8, POLICY_SUM, 0);
-        npc_apply_damage(defender, damage);
+        npc_apply_damage(defender, damage, TYPE_SLASHING);
     }
 }

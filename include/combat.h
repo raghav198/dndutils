@@ -13,34 +13,40 @@ struct attack_result {
 
 enum damage_type {
     // physical
-    BLUDGEONING,
-    PIERCING,
-    SLASHING,
+    TYPE_BLUDGEONING,
+    TYPE_PIERCING,
+    TYPE_SLASHING,
     // magical physical
-    M_BLUDGEONING,
-    M_PIERCING,
-    M_SLASHING,
+    TYPE_M_BLUDGEONING,
+    TYPE_M_PIERCING,
+    TYPE_M_SLASHING,
     // elemental
-    FIRE,
-    COLD,
-    ACID,
-    THUNDER,
-    LIGHTNING,
+    TYPE_FIRE,
+    TYPE_COLD,
+    TYPE_ACID,
+    TYPE_THUNDER,
+    TYPE_LIGHTNING,
     // others
-    RADIANT,
-    NECROTIC,
-    FORCE,
-    POISON,
+    TYPE_RADIANT,
+    TYPE_NECROTIC,
+    TYPE_FORCE,
+    TYPE_POISON,
     NUM_DAMAGE_TYPES
 };
 
-enum damage_modification { NONE, RESISTANCE, IMMUNITY, VULNERABILITIY };
+enum damage_modification {
+    DAMAGE_NONE,
+    DAMAGE_RESISTANCE,
+    DAMAGE_IMMUNITY,
+    DAMAGE_VULNERABILITIY
+};
 
 struct attack_result npc_make_attack(struct npc_sheet attacker,
                                      struct npc_sheet defender,
                                      enum stat attacking_stat);
 
-void npc_apply_damage(struct npc_sheet *npc, size_t damage);
+void npc_apply_damage(struct npc_sheet *npc, size_t damage,
+                      enum damage_type type);
 
 // Normally, these would be loaded from a DLL or something
 void combat_eldritch_blast(const struct npc_sheet *attacker,

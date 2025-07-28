@@ -10,7 +10,7 @@ struct npc_sheet {
 
     uint16_t AC, HP;
 
-    enum damage_modification modifications[NUM_DAMAGE_TYPES];
+    enum damage_modification damage_modifications[NUM_DAMAGE_TYPES];
 
     // bitfields
     uint32_t proficiencies : NUM_SKILLS;
