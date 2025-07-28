@@ -52,6 +52,29 @@ typedef enum _class {
     NUM_CLASSES
 } class_t;
 
+typedef enum damage_type {
+    // physical
+    BLUDGEONING,
+    PIERCING,
+    SLASHING,
+    // magical physical
+    M_BLUDGEONING,
+    M_PIERCING,
+    M_SLASHING,
+    // elemental
+    FIRE,
+    COLD,
+    ACID,
+    THUNDER,
+    LIGHTNING,
+    // others
+    RADIANT,
+    NECROTIC,
+    FORCE,
+    POISON,
+    NUM_DAMAGE_TYPES
+} damage_type_t;
+
 typedef struct npc_sheet {
     uint8_t stats[NUM_STATS];
 
