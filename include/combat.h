@@ -1,14 +1,40 @@
 #ifndef COMBAT_H_
 #define COMBAT_H_
 
-#include "skills.h"
-
 #include <stdbool.h>
+#include <stdint.h>
+
+#include "skills.h"
 
 struct attack_result {
     bool hit;
     bool crit;
 };
+
+enum damage_type {
+    // physical
+    BLUDGEONING,
+    PIERCING,
+    SLASHING,
+    // magical physical
+    M_BLUDGEONING,
+    M_PIERCING,
+    M_SLASHING,
+    // elemental
+    FIRE,
+    COLD,
+    ACID,
+    THUNDER,
+    LIGHTNING,
+    // others
+    RADIANT,
+    NECROTIC,
+    FORCE,
+    POISON,
+    NUM_DAMAGE_TYPES
+};
+
+enum damage_modification { NONE, RESISTANCE, IMMUNITY, VULNERABILITIY };
 
 struct attack_result npc_make_attack(struct npc_sheet attacker,
                                      struct npc_sheet defender,

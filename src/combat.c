@@ -1,6 +1,4 @@
-#include "combat.h"
-#include "dice.h"
-#include "skills.h"
+#include "character.h"
 
 struct attack_result npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
                      enum stat attacking_stat) {

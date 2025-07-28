@@ -11,6 +11,8 @@ extern int skills_errno;
 typedef int8_t mod_t;
 typedef uint8_t stat_value_t;
 
+struct npc_sheet;
+
 enum stat { STR, CON, DEX, INT, WIS, CHA, NUM_STATS };
 
 enum skill {
@@ -50,43 +52,6 @@ enum class_name {
     WARLOCK,
     WIZARD,
     NUM_CLASSES
-};
-
-enum damage_type {
-    // physical
-    BLUDGEONING,
-    PIERCING,
-    SLASHING,
-    // magical physical
-    M_BLUDGEONING,
-    M_PIERCING,
-    M_SLASHING,
-    // elemental
-    FIRE,
-    COLD,
-    ACID,
-    THUNDER,
-    LIGHTNING,
-    // others
-    RADIANT,
-    NECROTIC,
-    FORCE,
-    POISON,
-    NUM_DAMAGE_TYPES
-};
-
-struct npc_sheet {
-    uint8_t stats[NUM_STATS];
-
-    uint16_t AC, HP;
-
-    // bitfields
-    uint32_t proficiencies : NUM_SKILLS;
-    uint32_t expertise : NUM_SKILLS;
-    uint8_t saves : NUM_STATS;
-
-    // actually CR / 8, determines proficiency bonus
-    uint8_t CR;
 };
 
 mod_t npc_get_mod(struct npc_sheet npc, enum skill skill, enum stat stat);

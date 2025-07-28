@@ -1,4 +1,4 @@
-#include "skills.h"
+#include "character.h"
 #include "dice.h"
 
 #include <stdbool.h>
