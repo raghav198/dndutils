@@ -73,5 +73,5 @@ uint8_t pc_get_cr(struct pc_sheet pc);
 void character_start_turn(struct npc_sheet *npc);
 void character_roll_hit_die(struct npc_sheet *npc, enum dice_size size);
 void character_long_rest(struct pc_sheet *pc);
-// level_t character_caster_level(struct pc_sheet pc);
+
 #endif // CHARACTER_H_

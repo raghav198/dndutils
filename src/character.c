@@ -1,7 +1,7 @@
 #include "character.h"
 #include "dice.h"
 
-static enum dice_size class_hit_die_size(enum class_name cls) {
+static enum dice_size _hit_die_size(enum class_name cls) {
     switch (cls) {
     case SORCERER:
     case WIZARD:
@@ -98,7 +98,7 @@ void character_long_rest(struct pc_sheet *pc) {
     // Calculate max # of hit dice based on class levels
     level_t max_hit_dice[NUM_SIZES] = {0};
     for (enum class_name cls = 0; cls < NUM_CLASSES; cls++) {
-        max_hit_dice[class_hit_die_size(pc->levels[cls])]++;
+        max_hit_dice[_hit_die_size(cls)] += pc->levels[cls];
     }
 
     // Recover half your hit dice
