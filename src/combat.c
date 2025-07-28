@@ -2,15 +2,18 @@
 #include "character.h"
 #include "skills.h"
 
-struct attack_result npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
-                     enum stat attacking_stat) {
+struct attack_result npc_make_attack(struct npc_sheet attacker,
+                                     struct npc_sheet defender,
+                                     enum stat attacking_stat) {
+    // TODO: ensure proficiency bonus is added to attack modifier
     mod_t mod = npc_get_mod(attacker, NUM_SKILLS, attacking_stat);
     roll_result_t attack_roll = dice_perform_roll(1, 20, POLICY_SUM, 0);
-    if (attack_roll == 20) 
+    if (attack_roll == 20)
         return (struct attack_result){.hit = true, .crit = true};
     if (attack_roll == 1)
         return (struct attack_result){.hit = false, .crit = true};
-    return (struct attack_result){.hit = (attack_roll + mod) >= defender.AC, .crit = false};
+    return (struct attack_result){.hit = (attack_roll + mod) >= defender.AC,
+                                  .crit = false};
 }
 
 void npc_apply_damage(struct npc_sheet *npc, size_t damage,
@@ -22,30 +25,32 @@ void npc_apply_damage(struct npc_sheet *npc, size_t damage,
         damage /= 2;
     if (npc->damage_modifications[type] == DAMAGE_VULNERABILITIY)
         damage *= 2;
-    
-    if (npc->max_HP <= damage) {
-        npc->max_HP = 0;
+
+    if (npc->info.HP <= damage) {
+        npc->info.HP = 0;
         return;
     }
-    npc->max_HP -= damage;
+    npc->info.HP -= damage;
 }
 
 // EXAMPLES OF COMBAT ABILITIES
 
-void combat_eldritch_blast(const struct npc_sheet *attacker, struct npc_sheet *defender) {
+void combat_eldritch_blast(const struct npc_sheet *attacker,
+                           struct npc_sheet *defender) {
     // Get the number of eldritch blast bolts
     size_t num_bolts = 1;
-    if (attacker->CR > 4)
+    if (attacker->CR > 4 * 8)
         num_bolts++;
-    if (attacker->CR > 10)
+    if (attacker->CR > 10 * 8)
         num_bolts++;
-    if (attacker->CR > 16)
+    if (attacker->CR > 16 * 8)
         num_bolts++;
 
     // Make a number of attack rolls against the defender's AC
     // (assume they all target the same creature)
     for (size_t i = 0; i < num_bolts; i++) {
-        struct attack_result result = npc_make_attack(*attacker, *defender, CHA);
+        struct attack_result result =
+            npc_make_attack(*attacker, *defender, CHA);
         if (result.hit) {
             roll_result_t damage =
                 dice_perform_roll((result.crit ? 2 : 1), 10, POLICY_SUM, 0);
@@ -54,15 +59,15 @@ void combat_eldritch_blast(const struct npc_sheet *attacker, struct npc_sheet *d
     }
 }
 
-void combat_fireball(const struct npc_sheet *attacker, struct npc_sheet *defenders,
-                     size_t num_defenders) {
+void combat_fireball(const struct npc_sheet *attacker,
+                     struct npc_sheet *defenders, size_t num_defenders) {
 
     // Assume wizard casting
     size_t dc = npc_calculate_dc(*attacker, INT);
     for (size_t i = 0; i < num_defenders; i++) {
         // Ask each defender to make a dex save
         // TODO: check for magic resistance or other conditions
-        roll_result_t save = npc_make_save(defenders[i], DEX, SAVE_STRAIGHT); 
+        roll_result_t save = npc_make_save(defenders[i], DEX, SAVE_STRAIGHT);
         roll_result_t damage = dice_perform_roll(8, 6, POLICY_SUM, 0);
         // Halve the damage on a successful save
         if (save >= dc)
@@ -70,6 +75,7 @@ void combat_fireball(const struct npc_sheet *attacker, struct npc_sheet *defende
         npc_apply_damage(&defenders[i], damage, TYPE_FIRE);
     }
 }
+
 void combat_longsword_strike(const struct npc_sheet *attacker,
                              struct npc_sheet *defender) {
     // Much easier: just make an attack roll
