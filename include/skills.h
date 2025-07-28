@@ -11,9 +11,9 @@ extern int skills_errno;
 typedef int8_t mod_t;
 typedef uint8_t stat_value_t;
 
-typedef enum stat { STR, CON, DEX, INT, WIS, CHA, NUM_STATS } stat_t;
+enum stat { STR, CON, DEX, INT, WIS, CHA, NUM_STATS };
 
-typedef enum skill {
+enum skill {
     ATHLETICS,
     ACROBATICS,
     ANIMAL,
@@ -33,9 +33,9 @@ typedef enum skill {
     STEALTH,
     SURVIVAL,
     NUM_SKILLS
-} skill_t;
+};
 
-typedef enum _class {
+enum class_name {
     ARTIFICER,
     BARBARIAN,
     BARD,
@@ -50,9 +50,9 @@ typedef enum _class {
     WARLOCK,
     WIZARD,
     NUM_CLASSES
-} class_t;
+};
 
-typedef enum damage_type {
+enum damage_type {
     // physical
     BLUDGEONING,
     PIERCING,
@@ -73,9 +73,9 @@ typedef enum damage_type {
     FORCE,
     POISON,
     NUM_DAMAGE_TYPES
-} damage_type_t;
+};
 
-typedef struct npc_sheet {
+struct npc_sheet {
     uint8_t stats[NUM_STATS];
 
     uint16_t AC, HP;
@@ -87,12 +87,12 @@ typedef struct npc_sheet {
 
     // actually CR / 8, determines proficiency bonus
     uint8_t CR;
+};
 
-} npc_sheet_t;
-
-mod_t npc_get_mod(npc_sheet_t npc, skill_t skill, stat_t stat);
-roll_result_t npc_make_check(npc_sheet_t npc, skill_t skill, stat_t stat);
-roll_result_t npc_make_save(npc_sheet_t npc, stat_t stat);
-size_t npc_calculate_dc(npc_sheet_t npc, stat_t stat);
+mod_t npc_get_mod(struct npc_sheet npc, enum skill skill, enum stat stat);
+roll_result_t npc_make_check(struct npc_sheet npc, enum skill skill,
+                             enum stat stat);
+roll_result_t npc_make_save(struct npc_sheet npc, enum stat stat);
+size_t npc_calculate_dc(struct npc_sheet npc, enum stat stat);
 
 #endif // SKILLS_H_

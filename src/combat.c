@@ -2,8 +2,8 @@
 #include "dice.h"
 #include "skills.h"
 
-attack_result_t npc_make_attack(npc_sheet_t attacker, npc_sheet_t defender,
-                     stat_t attacking_stat) {
+attack_result_t npc_make_attack(struct npc_sheet attacker, struct npc_sheet defender,
+                     enum stat attacking_stat) {
     mod_t mod = npc_get_mod(attacker, NUM_SKILLS, attacking_stat);
     roll_result_t attack_roll = dice_perform_roll(1, 20, POLICY_SUM, 0);
     if (attack_roll == 20) 
@@ -13,7 +13,7 @@ attack_result_t npc_make_attack(npc_sheet_t attacker, npc_sheet_t defender,
     return (attack_result_t){.hit = (attack_roll + mod) >= defender.AC, .crit = false};
 }
 
-void npc_apply_damage(npc_sheet_t *npc, size_t damage) {
+void npc_apply_damage(struct npc_sheet *npc, size_t damage) {
     if (npc->HP <= damage) {
         npc->HP = 0;
         return;
@@ -23,7 +23,7 @@ void npc_apply_damage(npc_sheet_t *npc, size_t damage) {
 
 // EXAMPLES OF COMBAT ABILITIES
 
-void combat_eldritch_blast(const npc_sheet_t *attacker, npc_sheet_t *defender) {
+void combat_eldritch_blast(const struct npc_sheet *attacker, struct npc_sheet *defender) {
     // Get the number of eldritch blast bolts
     size_t num_bolts = 1;
     if (attacker->CR > 4)
@@ -45,7 +45,7 @@ void combat_eldritch_blast(const npc_sheet_t *attacker, npc_sheet_t *defender) {
     }
 }
 
-void combat_fireball(const npc_sheet_t *attacker, npc_sheet_t *defenders,
+void combat_fireball(const struct npc_sheet *attacker, struct npc_sheet *defenders,
                      size_t num_defenders) {
 
     // Assume wizard casting
@@ -60,8 +60,8 @@ void combat_fireball(const npc_sheet_t *attacker, npc_sheet_t *defenders,
         npc_apply_damage(&defenders[i], damage);
     }
 }
-void combat_longsword_strike(const npc_sheet_t *attacker,
-                             npc_sheet_t *defender) {
+void combat_longsword_strike(const struct npc_sheet *attacker,
+                             struct npc_sheet *defender) {
     // Much easier: just make an attack roll
     attack_result_t result = npc_make_attack(*attacker, *defender, STR);
     if (result.hit) {

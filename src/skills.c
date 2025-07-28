@@ -12,7 +12,7 @@ static mod_t _prof_bonus(uint8_t CR) {
     return (CR - 33) / 32 + 3;
 }
 
-static stat_t _default_stat(skill_t skill) {
+static enum stat _default_stat(enum skill skill) {
     switch (skill) {
     case ATHLETICS:
         return STR;
@@ -47,7 +47,7 @@ static mod_t _stat_mod(uint8_t score) {
     return (score - 10) / 2;
 }
 
-mod_t npc_get_mod(npc_sheet_t npc, skill_t skill, stat_t stat) {
+mod_t npc_get_mod(struct npc_sheet npc, enum skill skill, enum stat stat) {
     skills_errno = 0;
     if (stat == NUM_STATS) {
         stat = _default_stat(skill);
@@ -61,7 +61,7 @@ mod_t npc_get_mod(npc_sheet_t npc, skill_t skill, stat_t stat) {
     return _stat_mod(npc.stats[stat]) + (has_proficiency ? prof : 0) + (has_expertise ? prof : 0);
 }
 
-roll_result_t npc_make_check(npc_sheet_t npc, skill_t skill, stat_t stat) {
+roll_result_t npc_make_check(struct npc_sheet npc, enum skill skill, enum stat stat) {
     mod_t mod = (skill == NUM_SKILLS) ? _stat_mod(stat) : npc_get_mod(npc, skill, stat);
     if (skills_errno) {
         return -1;
@@ -71,7 +71,7 @@ roll_result_t npc_make_check(npc_sheet_t npc, skill_t skill, stat_t stat) {
     return roll + mod;
 }
 
-roll_result_t npc_make_save(npc_sheet_t npc, stat_t stat) {
+roll_result_t npc_make_save(struct npc_sheet npc, enum stat stat) {
     roll_result_t roll = dice_perform_roll(1, 20, POLICY_SUM, 0);
     mod_t mod = _stat_mod(npc.stats[stat]);
     if ((npc.saves >> stat) & 1) {
@@ -80,6 +80,6 @@ roll_result_t npc_make_save(npc_sheet_t npc, stat_t stat) {
     return roll + mod;
 }
 
-size_t npc_calculate_dc(npc_sheet_t npc, stat_t stat) {
+size_t npc_calculate_dc(struct npc_sheet npc, enum stat stat) {
     return _stat_mod(npc.stats[stat]) + _prof_bonus(npc.CR) + 8;
 }

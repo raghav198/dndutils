@@ -10,16 +10,18 @@ typedef struct attack_result {
     bool crit;
 } attack_result_t;
 
-attack_result_t npc_make_attack(npc_sheet_t attacker, npc_sheet_t defender,
-                                stat_t attacking_stat);
+attack_result_t npc_make_attack(struct npc_sheet attacker,
+                                struct npc_sheet defender,
+                                enum stat attacking_stat);
 
-void npc_apply_damage(npc_sheet_t *npc, size_t damage);
+void npc_apply_damage(struct npc_sheet *npc, size_t damage);
 
 // Normally, these would be loaded from a DLL or something
-void combat_eldritch_blast(const npc_sheet_t *attacker, npc_sheet_t *defender);
-void combat_fireball(const npc_sheet_t *attacker, npc_sheet_t *defenders,
-                     size_t num_defenders);
-void combat_longsword_strike(const npc_sheet_t *attacker,
-                             npc_sheet_t *defender);
+void combat_eldritch_blast(const struct npc_sheet *attacker,
+                           struct npc_sheet *defender);
+void combat_fireball(const struct npc_sheet *attacker,
+                     struct npc_sheet *defenders, size_t num_defenders);
+void combat_longsword_strike(const struct npc_sheet *attacker,
+                             struct npc_sheet *defender);
 
 #endif // COMBAT_H_
