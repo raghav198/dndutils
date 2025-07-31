@@ -1,5 +1,6 @@
 #include "character.h"
 #include "dice.h"
+#include "util.h"
 #include <string.h>
 
 static enum dice_size _hit_die_size(enum class_name cls) {
@@ -50,6 +51,7 @@ void character_roll_hit_die(struct npc_sheet *npc, enum dice_size size) {
     roll_result_t health_recovered =
         dice_perform_roll(1, dice_get_sides(size), POLICY_SUM, 0);
     health_recovered += npc_get_mod(*npc, NUM_SKILLS, CON);
+    DND_INCREASE_CLAMPED(&npc->info.HP, health_recovered, npc->max_HP);
     if (health_recovered >= missing_health)
         health_recovered = missing_health;
     npc->info.HP += health_recovered;
@@ -108,6 +110,8 @@ void character_long_rest(struct pc_sheet *pc) {
 
     // Recover half your hit dice
     for (enum dice_size sz = 0; sz < NUM_SIZES; sz++) {
+        DND_INCREASE_CLAMPED(pc->base.info.hit_dice + sz, max_hit_dice[sz] / 2,
+                             max_hit_dice[sz]);
         pc->base.info.hit_dice[sz] += max_hit_dice[sz] / 2;
         if (pc->base.info.hit_dice[sz] > max_hit_dice[sz]) {
             pc->base.info.hit_dice[sz] = max_hit_dice[sz];
