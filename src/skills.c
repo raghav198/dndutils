@@ -102,7 +102,7 @@ enum roll_type roll_type_aggregate(enum roll_type a, enum roll_type b) {
         return b;
     if (b == ROLL_STRAIGHT)
         return a;
-    if (a == ROLL_ADV && b == ROLL_DIS) {
+    if (a != b) {
         return ROLL_FORCED_STRAIGHT;
     }
     return a;
