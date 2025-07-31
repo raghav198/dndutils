@@ -6,7 +6,7 @@
 
 int skills_errno = 0;
 
-static mod_t _prof_bonus(uint8_t CR) {
+static mod_t _prof_bonus(u8 CR) {
     if (CR <= 32) {
         return 2;
     }
@@ -44,9 +44,7 @@ static enum stat _default_stat(enum skill skill) {
     }
 }
 
-static mod_t _stat_mod(uint8_t score) {
-    return (score - 10) / 2;
-}
+static mod_t _stat_mod(u8 score) { return (score - 10) / 2; }
 
 mod_t npc_get_mod(struct npc_sheet npc, enum skill skill, enum stat stat) {
     skills_errno = 0;
@@ -56,14 +54,17 @@ mod_t npc_get_mod(struct npc_sheet npc, enum skill skill, enum stat stat) {
     if (skills_errno)
         return -1;
 
-    uint8_t prof = _prof_bonus(npc.CR);
+    u8 prof = _prof_bonus(npc.CR);
     bool has_proficiency = (npc.proficiencies >> skill) & 1;
     bool has_expertise = (npc.expertise >> skill) & 1;
-    return _stat_mod(npc.stats[stat]) + (has_proficiency ? prof : 0) + (has_expertise ? prof : 0);
+    return _stat_mod(npc.stats[stat]) + (has_proficiency ? prof : 0) +
+           (has_expertise ? prof : 0);
 }
 
-roll_result_t npc_make_check(struct npc_sheet npc, enum skill skill, enum stat stat) {
-    mod_t mod = (skill == NUM_SKILLS) ? _stat_mod(stat) : npc_get_mod(npc, skill, stat);
+roll_result_t npc_make_check(struct npc_sheet npc, enum skill skill,
+                             enum stat stat) {
+    mod_t mod =
+        (skill == NUM_SKILLS) ? _stat_mod(stat) : npc_get_mod(npc, skill, stat);
     if (skills_errno) {
         return -1;
     }

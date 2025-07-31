@@ -2,7 +2,6 @@
 #define COMBAT_H_
 
 #include <stdbool.h>
-#include <stdint.h>
 
 #include "skills.h"
 
