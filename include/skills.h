@@ -36,14 +36,14 @@ enum skill {
     NUM_SKILLS
 };
 
-enum save_type { SAVE_STRAIGHT, SAVE_ADV, SAVE_DIS };
+enum roll_type { ROLL_STRAIGHT, ROLL_ADV, ROLL_DIS, ROLL_FORCED_STRAIGHT };
 
 mod_t npc_get_mod(struct npc_sheet npc, enum skill skill, enum stat stat);
 roll_result_t npc_make_check(struct npc_sheet npc, enum skill skill,
                              enum stat stat);
 roll_result_t npc_make_save(struct npc_sheet npc, enum stat stat,
-                            enum save_type type);
+                            enum roll_type type);
 size_t npc_calculate_dc(struct npc_sheet npc, enum stat stat);
-enum save_type save_type_apply(enum save_type a, enum save_type b);
+enum roll_type roll_type_aggregate(enum roll_type a, enum roll_type b);
 
 #endif // SKILLS_H_
