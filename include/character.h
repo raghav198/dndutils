@@ -64,9 +64,14 @@ struct npc_sheet {
     struct character_info info;
 };
 
+struct subclass {
+    const char *name;
+};
+
 struct pc_sheet {
     struct npc_sheet base;
     level_t levels[NUM_CLASSES];
+    struct subclass subclasses[NUM_CLASSES];
 };
 
 uint8_t pc_get_cr(struct pc_sheet pc);

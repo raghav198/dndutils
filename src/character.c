@@ -1,5 +1,6 @@
 #include "character.h"
 #include "dice.h"
+#include <string.h>
 
 static enum dice_size _hit_die_size(enum class_name cls) {
     switch (cls) {
@@ -56,33 +57,37 @@ void character_roll_hit_die(struct npc_sheet *npc, enum dice_size size) {
 }
 
 static level_t _caster_level(struct pc_sheet pc) {
-    // TODO: Add support for Eldritch Knight and Arcane Trickster (1/3 casters)
     level_t full_levels = pc.levels[BARD] + pc.levels[DRUID] +
                           pc.levels[CLERIC] + pc.levels[SORCERER] +
                           pc.levels[WIZARD];
     level_t half_levels =
         pc.levels[ARTIFICER] + pc.levels[PALADIN] + pc.levels[RANGER];
-    return full_levels + (half_levels / 2);
+    level_t third_levels = 0;
+    if (!strcmp(pc.subclasses[FIGHTER].name, "eldritch_knight"))
+        third_levels++;
+    if (!strcmp(pc.subclasses[ROGUE].name, "arcane_trickster"))
+        third_levels++;
+    return full_levels + (half_levels / 2) + (third_levels / 3);
 }
 
-static uint8_t _num_slots(level_t level, uint8_t slot_level) {
-    if (slot_level > (level + 1) / 2)
+static uint8_t _num_slots(level_t caster_level, uint8_t slot_level) {
+    if (slot_level > (caster_level + 1) / 2)
         return 0;
     switch (slot_level) {
     case 1:
-        return (level > 3) ? 4 : level + 1;
+        return (caster_level > 3) ? 4 : caster_level + 1;
     case 2:
-        return (level == 3) ? 2 : 3;
+        return (caster_level == 3) ? 2 : 3;
     case 3:
-        return (level == 5) ? 2 : 3;
+        return (caster_level == 5) ? 2 : 3;
     case 4:
-        return (level > 10) ? 3 : level - 6;
+        return (caster_level > 10) ? 3 : caster_level - 6;
     case 5:
-        return (level == 9) ? 1 : (level > 17) ? 3 : 2;
+        return (caster_level == 9) ? 1 : (caster_level > 17) ? 3 : 2;
     case 6:
-        return (level > 18) ? 2 : 1;
+        return (caster_level > 18) ? 2 : 1;
     case 7:
-        return (level == 20) ? 2 : 1;
+        return (caster_level == 20) ? 2 : 1;
     case 8:
     case 9:
         return 1;
