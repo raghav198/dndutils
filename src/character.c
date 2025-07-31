@@ -46,8 +46,6 @@ void character_roll_hit_die(struct npc_sheet *npc, enum dice_size size) {
     if (npc->info.hit_dice[size] == 0)
         return;
 
-    size_t missing_health = npc->max_HP - npc->info.HP;
-
     roll_result_t health_recovered =
         dice_perform_roll(1, dice_get_sides(size), POLICY_SUM, 0);
     health_recovered += npc_get_mod(*npc, NUM_SKILLS, CON);
