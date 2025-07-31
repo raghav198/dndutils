@@ -2,14 +2,13 @@
 #define SKILLS_H_
 
 #include "dice.h"
-#include <stdint.h>
-
+#include "ints.h"
 extern int skills_errno;
 
 #define ESKILL_INVAL 1;
 
-typedef int8_t mod_t;
-typedef uint8_t stat_value_t;
+typedef i8 mod_t;
+typedef u8 stat_value_t;
 
 struct npc_sheet;
 

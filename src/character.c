@@ -26,7 +26,7 @@ static enum dice_size _hit_die_size(enum class_name cls) {
     }
 }
 
-uint8_t pc_get_cr(struct pc_sheet pc) {
+u8 pc_get_cr(struct pc_sheet pc) {
     size_t cr = 0;
     for (size_t i = 0; i < NUM_CLASSES; i++) {
         cr += 8 * pc.levels[i];
@@ -70,7 +70,7 @@ static level_t _caster_level(struct pc_sheet pc) {
     return full_levels + (half_levels / 2) + (third_levels / 3);
 }
 
-static uint8_t _num_slots(level_t caster_level, uint8_t slot_level) {
+static u8 _num_slots(level_t caster_level, u8 slot_level) {
     if (slot_level > (caster_level + 1) / 2)
         return 0;
     switch (slot_level) {
