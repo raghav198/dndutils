@@ -29,6 +29,7 @@ struct movement {
     f32 walking;
     f32 flying;
     f32 swimming;
+    f32 burrowing;
 };
 
 struct character_info {
