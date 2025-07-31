@@ -25,6 +25,12 @@ enum class_name {
     NUM_CLASSES
 };
 
+struct movement {
+    float walking;
+    float flying;
+    float swimming;
+};
+
 struct character_info {
     uint16_t HP;
     struct {
@@ -32,10 +38,11 @@ struct character_info {
     } pos;
 
     struct {
-        float movement;
+        struct movement movement;
         bool action;
         bool bonus_action;
         bool reaction;
+        bool object_interaction;
     } action_economy;
 
     uint8_t spell_slots[9]; // TODO: track warlock slots separately!
@@ -47,8 +54,7 @@ struct npc_sheet {
 
     uint16_t AC, max_HP;
 
-    // TODO: implement swimming, climbing, flying, etc.
-    float speed; // just walking speed for now
+    struct movement speed;
 
     enum damage_modification damage_modifications[NUM_DAMAGE_TYPES];
 
