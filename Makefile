@@ -15,22 +15,6 @@ CFLAGS += $(DBG)
 
 all: $(APP)
 
-# submodules:
-# 	git submodule update --init --recursive --depth 1
-
-# include/raylib.h: submodules
-# 	mkdir -p include
-# 	cp vendor/raylib/src/raylib.h include/raylib.h
-
-# include/raymath.h: submodules
-# 	mkdir -p include
-# 	cp vendor/raylib/src/raymath.h include/raymath.h
-
-# lib/libraylib.a: submodules
-# 	cd vendor/raylib/src; make PLATFORM=PLATFORM_DESKTOP
-# 	mkdir -p lib
-# 	cp vendor/raylib/src/libraylib.a lib/
-
 $(OUTDIR)/%.o: src/%.c
 
 $(OUTDIR)/%.o: src/%.c $(DEPDIR)/%.d | $(DEPDIR)
